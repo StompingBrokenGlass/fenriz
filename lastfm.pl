@@ -12,7 +12,7 @@ use JSON;
 binmode STDOUT, ":utf8";
 
 #last.fm API key
-our $api_key = '362a86ba35347c41a363b46dc32e333e';
+our $api_key = 'put your api key here';
 our $nick_user_map;
 our $user_nick_map = {}; # derived from $nick_user_map
 our $api_cache = {};
@@ -353,14 +353,14 @@ sub format_user_np {
 	$str .= _secs_to_mins($$data{pos}) . "/" if $$data{pos};
 	$str .= _secs_to_mins($$data{len}) . "] ";
 	
-	#This grabs a bit.ly url for the long last.fm url
+	#This grabs a bit.ly url for the long last.fm url it works if you want to uncomment it.
 	#use your own login and key
 	#bit.ly keeps going down so i'm disabling it.
 	#my $lwp = LWP::UserAgent->new;
 	#$lwp->agent("Perl::Bitly/1.0");
 	#bit.ly user login and API key	
-	#my $api_login = "kwamaking";
-	#my $api_key = "R_37f6ef3f9c212cdd28f22bf515240b69";
+	#my $api_login = "";
+	#my $api_key = "";
 	#my $url = $$data{url};
 	#my $api_src = "http://api.bit.ly/shorten?longUrl=".$url."&login=".$api_login."&apiKey=".$api_key;
 	#my $response = $lwp->get($api_src);
