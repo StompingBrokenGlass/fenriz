@@ -9,7 +9,7 @@ sub bitly {
 	my $url = shift;
 	my $lwp = LWP::UserAgent->new;
 	$lwp->agent("Perl::Bitly/1.0");
-	bit.ly user login and API key	
+	#bit.ly user login and API key	
 	my $api_login = "kwamaking";
 	my $api_key = "R_37f6ef3f9c212cdd28f22bf515240b69";
 	my $api_src = "http://api.bit.ly/shorten?longUrl=".$url."&login=".$api_login."&apiKey=".$api_key;
