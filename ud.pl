@@ -10,13 +10,12 @@ my $ua = LWP::UserAgent->new;
 $ua->agent("libwww-perl/6.02");
 
 sub send_msg {
-
 	my ($server, $target, $text) = ($_[0], $_[1], join(' ', @_[2..$#_]));
 	return unless defined $text && $text ne '';
 	Irssi::timeout_add_once(50, sub { $server->command("MSG $target $text") }, undef);
 }
-sub message_public {
 
+sub message_public {
 	my ($server, $text, $nick, $addr, $target) = @_;
 	my @cmd = split /\s+/, $text;
 	given ($cmd[0]) {
@@ -47,5 +46,10 @@ sub message_public {
 	}
 }
 
+sub message_own_public {
+	my ($server, $text, $target) = @_;
+	message_public( $server, $text, $server->{nick}, "localhost", $target );
+}
+
 Irssi::signal_add_last("message public", \&message_public);
-return 1;
+Irssi::signal_add_last("message own_public", \&message_own_public);

@@ -11,7 +11,6 @@ $ua->agent('Mozilla/5.0');
 my $ctemp = '';
 
 sub get_weather {
-
 	my (@cmd)  = @_;
 	my $str;
 	if (!$cmd[1]) {
@@ -44,8 +43,8 @@ sub get_weather {
 	}
 	return $str;
 }		
-sub send_msg {
 
+sub send_msg {
 	my ($server, $target, $text, $commandtype) = @_;
 	return unless defined $text && $text ne '';
 	if ($commandtype eq 'MSG') {
@@ -55,8 +54,8 @@ sub send_msg {
 		Irssi::timeout_add_once(50, sub { $server->command("NOTICE $target $text") }, undef);
 	}
 }
-sub message_public {
 
+sub message_public {
 	my ($server, $text, $nick, $addr, $target) = @_;
 	my @cmd = split /\s+/, $text;
 
@@ -79,6 +78,10 @@ sub message_public {
   
 }
 
-Irssi::signal_add_last("message public", \&message_public);
+sub message_own_public {
+	my ($server, $text, $target) = @_;
+	message_public( $server, $text, $server->{nick}, "localhost", $target );
+}
 
-return 1;
+Irssi::signal_add_last("message public", \&message_public);
+Irssi::signal_add_last("message own_public", \&message_own_public);

@@ -10,18 +10,16 @@ my $ua = LWP::UserAgent->new;
 $ua->agent('Mozilla/5.0');
 
 sub send_msg {
-
 	my ($server, $target, $text) = ($_[0], $_[1], join(' ', @_[2..$#_]));
 	return unless defined $text && $text ne '';
 	Irssi::timeout_add_once(50, sub { $server->command("MSG $target $text") }, undef);
 }
-sub message_public {
 
+sub message_public {
 	my ($server, $text, $nick, $addr, $target) = @_;
 	my @cmd = split /\s+/, $text;
 
 	given ($cmd[0]) {
-
   		when ('~checksite') { # checking
 			if (!$cmd[1]) {
 				my $str = "Please include a website. i.e., ~checksite google.com.";
@@ -40,7 +38,6 @@ sub message_public {
 				}
 			}
 		}
-
 		default {
 			return;
 		}
@@ -55,4 +52,3 @@ sub message_own_public {
 
 Irssi::signal_add_last("message public", \&message_public);
 Irssi::signal_add_last("message own_public", \&message_own_public);
-return 1;

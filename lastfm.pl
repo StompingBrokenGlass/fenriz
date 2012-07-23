@@ -553,4 +553,3 @@ sub message_own_public {
 
 Irssi::signal_add_last("message public", \&message_public);
 Irssi::signal_add_last("message own_public", \&message_own_public);
-return 1;
