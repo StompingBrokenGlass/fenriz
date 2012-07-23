@@ -1,18 +1,20 @@
-fenriz
+Fenriz
 ======
 
 Fenriz: Utility bot for irssi with last.fm support.
 
-Copy these scripts into your irssi scripts directory (typically ~/.irssi/scripts)
+Installation
+======
 
-If you need help loading scripts you may want to consider a different irc client.
+1. Git pull this repository into your home directory (~)
+2. Navigate to your script sfile under your irssi configuration location (usually ~/.irssi)
+3. Create a symbolic link to fenriz.pl (ln -s ~/fenriz/fenriz.pl .)
+4. Load fenriz.pl in irssi (/script load fenriz.pl)
+5. You're done, you can also create a symlink in your autorun directory. 
 
-To autoload these scripts, create an autorun dir in the scripts directory.  you can use symlinks.
 
-ln -s ~/.irssi/scripts/lastfm.pl ~/.irssi/scripts/autorun/
+Notes
+======
+This is a work in progress and can occasionally be buggy.  
+You can find me (kwamaking) on irc.snoonet.com if you have questions.
 
-Something along those lines should do the trick. 
-
-You can catch me in #metal on snoonet if you have any questions.
-
-To get a feel for what the Bot can do you can use the ~help command.

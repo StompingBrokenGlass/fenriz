@@ -1,18 +1,8 @@
-use v5.10;
-use strict;
-use warnings;
-use feature ':5.10';
-
-use LWP::UserAgent;
-use List::MoreUtils qw{uniq};
-use Encode;
-use Carp;
-use JSON;
-
-binmode STDOUT, ":utf8";
-
-#last.fm API key
-our $api_key = 'put your api key here';
+#last.fm script
+#there is a ton of funtionality in this script that I did not write. 
+#I do not know the original author of much of this. 
+#last.fm api key
+our $api_key = '362a86ba35347c41a363b46dc32e333e';
 our $nick_user_map;
 our $user_nick_map = {}; # derived from $nick_user_map
 our $api_cache = {};
@@ -173,7 +163,16 @@ sub get_last_fm_data {
 	return decode_json $resp->content if $resp->is_success;
 	undef;
 }
-
+sub startcompare {
+	my ($server, $target, @cmd) = @_;
+	unless (@cmd > 1) { send_msg($server, $target, "Command ~compare needs someone to compare to.") }
+	else {
+		my @users = (@cmd[1,2]);
+		unshift @users, $nick unless $cmd[2];
+		map { $_ = nick_map $_ } @users[0,1];
+		send_msg($server, $target, usercompare(@users));
+	}
+}
 sub usercompare {
 	my @user = @_[0,1];
 
@@ -286,7 +285,6 @@ sub getArtist {
 	
 sub get_user_np {
 	my $user = shift;
-
 	my %res;
 	my $data = get_last_fm_data( 'user.getrecenttracks', limit => 1, user => $user );
 	my ($prevtime, $prevlen);
@@ -353,28 +351,9 @@ sub format_user_np {
 	$str .= _secs_to_mins($$data{pos}) . "/" if $$data{pos};
 	$str .= _secs_to_mins($$data{len}) . "] ";
 	
-	#This grabs a bit.ly url for the long last.fm url it works if you want to uncomment it.
-	#use your own login and key
-	#bit.ly keeps going down so i'm disabling it.
-	#my $lwp = LWP::UserAgent->new;
-	#$lwp->agent("Perl::Bitly/1.0");
-	#bit.ly user login and API key	
-	#my $api_login = "";
-	#my $api_key = "";
-	#my $url = $$data{url};
-	#my $api_src = "http://api.bit.ly/shorten?longUrl=".$url."&login=".$api_login."&apiKey=".$api_key;
-	#my $response = $lwp->get($api_src);
-	#my $raw_data = $response->decoded_content;
-	#foreach my $line (split(/\n/,$raw_data))
-	#{
-	#	if ($line =~ m/shortURL/i)
-	#	{
-	#		my @url_bitly = split(/([{}\s\"])shortUrl/,$line);
-	#		my @lil_bitly = split(/\"/,$url_bitly[2]);
-	#		$str .= "(". $lil_bitly[2] .")";
-	#		last;
-	#	}
-	#}
+	#bitly for shorter url
+	$str .= bitly($$data{url});
+	
 	if (($user eq "TheRealTauman") && ($$data{artist} eq "Ihsahn")) {
 		$str = "DerTauman is touching himself to Ihsahn... Again.";
 	}
@@ -382,12 +361,6 @@ sub format_user_np {
 }
 
 $SIG{INT} = sub { write_cache; exit };
-
-sub send_msg {
-	my ($server, $target, $text) = ($_[0], $_[1], join(' ', @_[2..$#_]));
-	return unless defined $text && $text ne '';
-	Irssi::timeout_add_once(50, sub { $server->command("MSG $target $text") }, undef);
-}
 
 sub now_playing {
 	my ($nick, $ignerr, @cmd) = @_;
@@ -406,150 +379,4 @@ sub now_playing {
 	else { return format_user_np($user, $np) }
 }
 
-sub message_public {
-	my ($server, $text, $nick, $addr, $target) = @_;
-	my @cmd = split /\s+/, $text;
-
-	my $send = sub {
-	};
-	given ($cmd[0]) {
-		when ('~np') { # now playing
-			send_msg($server, $target, now_playing($nick, 1, @cmd));
-			write_cache;
-		}
-		when ('~top') { # top artists
-			send_msg($server, $target, usertopartists($nick, 1, @cmd));
-			write_cache;
-		}
-		when ('~band') { # Get band
-			send_msg($server, $target, getArtist($nick, 1, @cmd));
-			write_cache;
-		}
-		when ('~false') { # checks if user is a false. 
-			send_msg($server, $target, userfalse($nick, 1, @cmd));
-			write_cache;
-		}
-		when ('~plays') { # checks user plays of given artist. 
-			send_msg($server, $target, userPlays($nick, 1, @cmd));
-			write_cache;
-		}
-		when ('911') { # bring on the metal police 
-			my @nicks = ("BrutalN00dle","kwamaking","Skuld","StompinBroknGlas","Shamed","Mike","thegauntlet","nakedcups","Fenriz","BrutalMobile");
-			if (grep {$_ eq $nick} @nicks) {
-				my $str = "...........__\_@@\@__";
-				my $str2 = "..... ___//___?____\\________";
-				my $str3 = "...../--o-METAL-POLICE------@}";
-				my $str4 = "....`=={@}=====+===={@}--- ' WHAT SEEMS TO BE THE PROBLEM HERE?";
-				send_msg($server, $target, $str);
-				send_msg($server, $target, $str2);
-				send_msg($server, $target, $str3);
-				send_msg($server, $target, $str4);
-			}
-			elsif ($nick eq "DerTauman") {
-				my $str5 = "Calling the police on false pretenses is a crime";
-				send_msg($server, $target, $str5);
-			}
-		}
-		when ('MANOWAR') { # no mas manowar 
-			my $str = "Move along";
-			send_msg($server, $target, $str);
-		}
-		when ('amirite?') { # ya u rite
-			my $str = "ya u rite";
-			send_msg($server, $target, $str);
-		}
-		when ('faggot') { # kick the poseurs 
-			Irssi::timeout_add_once(50, sub { $server->command("KICK $target $nick leave the hall") }, undef);
-		}
-		when ('~compare') { # tasteometer comparison
-			unless (@cmd > 1) { send_msg($server, $target, "Command ~compare needs someone to compare to.") }
-			else {
-				my @users = (@cmd[1,2]);
-				unshift @users, $nick unless $cmd[2];
-				map { $_ = nick_map $_ } @users[0,1];
-				send_msg($server, $target, usercompare(@users));
-			}
-		}
-		when ('~setuser') {
-			unless (@cmd > 1) { send_msg($server, $target, "Command ~setuser needs a last.fm username.") }
-			elsif($cmd[1] eq $nick) { send_msg($server, $target, "$nick: You already are yourself.") }
-			else {
-				my $username = $cmd[1];
-				my $ircnick = $nick;
-				if ($cmd[2]) {
-					if ($nick eq $server->{nick}) {
-						$username = $cmd[2];
-						$ircnick = $cmd[1];
-					} else {
-						send_msg($server, $target, "You can only associate your own nick. Use ~setuser your_last_fm_username");
-						return;
-					}
-				}
-				my $data = get_last_fm_data( 'user.getrecenttracks', limit => 1, user => $username );
-				if ($data && $$data{recenttracks}{track}) {
-					send_msg($server, $target, "'$ircnick' is now associated with http://last.fm/user/$username");
-					$$nick_user_map{$ircnick} = $username;
-					$$user_nick_map{$username}{$ircnick} = 1;
-					write_cache;
-				} else {
-					send_msg($server, $target, "Could not find the '$username' last.fm account.");
-				}
-			}
-		}
-		when ('~deluser') {
-			my $ircnick = $nick eq $server->{nick} ? ($cmd[1] // $nick) : $nick;
-			my $username = $$nick_user_map{$ircnick};
-			if ($username) {
-				delete $$user_nick_map{$username}{$ircnick};
-				delete $$nick_user_map{$ircnick};
-				del_cache('accountless', $username) if get_cache('accountless', $username);
-				send_msg($server, $target, "Removed the mapping for '$ircnick'");
-				write_cache;
-			} elsif (get_cache('accountless', $ircnick)) {
-				del_cache('accountless', $ircnick);
-				send_msg($server, $target, "Removed $ircnick from invalid account cache");
-				write_cache;
-			} else {
-				send_msg($server, $target, "Mapping for '$ircnick' doesn't exist");
-			}
-		}
-		when ('~whois') {
-			unless (@cmd > 1) {
-				send_msg($server, $target, ".whois needs a last.fm username");
-				return;
-			}
-			my $user = $cmd[1];
-			my $nick = $$nick_user_map{$user};
-			if (my $map = $$user_nick_map{$user}) {
-				my @nicks = sort keys %$map;
-				my $end = pop @nicks;
-				my $list = join ', ', @nicks;
-				$list = $list ? "$list and $end" : $end;
-				send_msg($server, $target, "$user is also known as $list");
-			}
-			elsif ($nick) {
-				my $map = $$user_nick_map{$nick};
-				my @nicks = sort grep { $_ ne $user and $_ ne $nick } keys %$map;
-				my $end = pop @nicks;
-				my $list = join ', ', @nicks;
-				my $main = $list || $end ? " ($nick)" : "";
-				$list = $end && $list ? "$list and $end" : $end ? $end : $list ? "" : $nick;
-				send_msg($server, $target, "$user$main is also known as $list");
-			}
-			else {
-				send_msg($server, $target, "$user is only known as $user");
-			}
-		}
-		default {
-			return;
-		}
-	}
-}
-
-sub message_own_public {
-	my ($server, $text, $target) = @_;
-	message_public( $server, $text, $server->{nick}, "localhost", $target );
-}
-
-Irssi::signal_add_last("message public", \&message_public);
-Irssi::signal_add_last("message own_public", \&message_own_public);
+return 1; #return true
