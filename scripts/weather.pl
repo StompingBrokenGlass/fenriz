@@ -1,5 +1,6 @@
 # Weather Script
 sub get_weather {
+	my (@cmd) = @_;
 	my $ua = LWP::UserAgent->new;
 	$ua->agent('Mozilla/5.0');
 	my $str;
