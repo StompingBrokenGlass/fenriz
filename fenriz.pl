@@ -73,6 +73,7 @@ sub message_public {
 		when (m/\~plays/i) { # checks user plays of given artist. 
 			send_msg($server, $target, userPlays($nick, 1, @cmd));
 		}
+		#These are just some silly commands added at the request of some users
 		when ("911") { # bring on the metal police 
 			my @nicks = ("BrutalN00dle","kwamaking","Skuld","StompinBroknGlas","Shamed","Mike","thegauntlet","nakedcups","Fenriz","BrutalMobile");
 			if (grep {$_ eq $nick} @nicks) {
@@ -98,9 +99,7 @@ sub message_public {
 			my $str = "ya u rite";
 			send_msg($server, $target, $str);
 		}
-		when (m/\faggot/i) { # kick the poseurs 
-			Irssi::timeout_add_once(50, sub { $server->command("KICK $target $nick leave the hall") }, undef);
-		}
+		#end silly commands
 		when (m/\~compare/i) { # tasteometer comparison
 			#created sub routine because it's more involved in lastfm.pl
 			startcompare($server, $text, $nick, $addr, $target, @cmd);
