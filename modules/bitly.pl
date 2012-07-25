@@ -7,6 +7,7 @@
 
 sub bitly {
 	my ($url) = @_;
+	$url =~ s/\+/ /g;
 	my $lwp = LWP::UserAgent->new;
 	$lwp->agent("Perl::Bitly/1.0");
 	$lwp->timeout(5);
@@ -17,6 +18,6 @@ sub bitly {
 	my $response = $lwp->get($api_src);
 	my $decoded_content = decode_json($response->content);
 	my $tinyurl = $decoded_content->{'results'}{$url}{'shortUrl'};
-	return $tinyurl;
+	return "(".$tinyurl.")";
 }
 return 1; #return true
