@@ -90,7 +90,7 @@ sub message_public {
 				send_msg($server, $target, $str5);
 			}
 		}
-		when (m/\~MANOWAR/i) { # no mas manowar 
+		when (m/MANOWAR/i) { # no mas manowar 
 			my $str = "Move along";
 			send_msg($server, $target, $str);
 		}
