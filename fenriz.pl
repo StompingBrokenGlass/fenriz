@@ -73,7 +73,7 @@ sub message_public {
 		when (m/\~plays/i) { # checks user plays of given artist. 
 			send_msg($server, $target, userPlays($nick, 1, @cmd));
 		}
-		when (m/\~911/i) { # bring on the metal police 
+		when ("911") { # bring on the metal police 
 			my @nicks = ("BrutalN00dle","kwamaking","Skuld","StompinBroknGlas","Shamed","Mike","thegauntlet","nakedcups","Fenriz","BrutalMobile");
 			if (grep {$_ eq $nick} @nicks) {
 				my $str = "...........__\_@@\@__";
