@@ -7,7 +7,7 @@ Installation
 ======
 
 1. Git pull this repository into your home directory (~)
-2. Navigate to your script sfile under your irssi configuration location (usually ~/.irssi)
+2. Navigate to your scripts file under your irssi configuration location (usually ~/.irssi)
 3. Create a symbolic link to fenriz.pl (ln -s ~/fenriz/fenriz.pl .)
 4. Load fenriz.pl in irssi (/script load fenriz.pl)
 5. You're done, you can also create a symlink in your autorun directory. 
