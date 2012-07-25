@@ -22,7 +22,7 @@ sub urbandict {
 		}
 		else {
 			$entry = $decoded_content->{'list'}[0]{'word'}.': '.$decoded_content->{'list'}[0]{'definition'}.' Example: '.
-			$decoded_content->{'list'}[0]{'example'}.' For more visit: '.$tinyurl;
+			$decoded_content->{'list'}[0]{'example'}.' For more visit: ('.$tinyurl.')';
 		}
 		send_msg($server, $target, $entry);
 	}
