@@ -12,11 +12,6 @@ Installation
 4. Load fenriz.pl in irssi (/script load fenriz.pl)
 5. You're done, you can also create a symlink in your autorun directory. 
 
-Required Perl Modules:
-======
-
-Mojo::DOM (cpanm Mojo::DOM)
-
 Notes
 ======
 This is a work in progress and can occasionally be buggy.  

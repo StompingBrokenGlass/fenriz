@@ -8,7 +8,6 @@ use List::MoreUtils qw{uniq};
 use Encode;
 use Carp;
 use JSON;
-use Mojo::DOM;
 binmode STDOUT, ":utf8";
 use vars qw($VERSION %IRSSI);
 $VERSION = '1.00';
