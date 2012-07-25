@@ -36,51 +36,44 @@ our $user_nick_map = {}; # derived from $nick_user_map
 #this is the main sub that grabs commands from the window.
 #some commands are sent to subs on the included files above
 sub message_public {
-#I can't figure out how to use global variables out of the scripts above
-#declaring these to temp fix the last.fm commands
 	my ($server, $text, $nick, $addr, $target) = @_;
 	my @cmd = split /\s+/, $text;
 	given ($cmd[0]) {
-		when ('~checksite') {
+		when (m/\~checksite/i) { #using a regex to ignore case on commands
 			checksite($server, $target, @cmd);
 		}
-		when ('~weather') { # weather private msg
+		when (m/\~weather/i) { # weather private msg
 			my $commandtype = "notice";
 			send_msg_weather($server, $nick, get_weather(@cmd), $commandtype);
 		}
-		when ('@weather') { # weather public msg
+		when (m/\@weather/i) { # weather public msg
 			my $commandtype = "MSG";
 			send_msg_weather($server, $target, get_weather(@cmd), $commandtype);
 		}
-		when ('%weather') { # DerTauman harrassment
-			my $commandtype = "MSG";
-			my $dertauman = "DerTauman";
-			send_msg_weather($server, $dertauman, get_weather(@cmd), $commandtype);
-		}
-		when ('~ud') {
+		when (m/\~ud/i) {
 			urbandict($server, $target, @cmd);
 		}
-		when ('~help') {
+		when (m/\~help/i) {
 			help($server, $target, $nick, @cmd);
 		}
 		#Last.fm commands, this is a huge set. 
-		when ('~np') { # now playing
+		when (m/\~np/i) { # now playing
 			send_msg($server, $target, now_playing($nick, 1, @cmd));
 			write_cache();
 		}
-		when ('~top') { # top artists
+		when (m/\~top/i) { # top artists
 			send_msg($server, $target, usertopartists($nick, 1, @cmd));
 		}
-		when ('~band') { # Get band
+		when (m/\~band/i) { # Get band
 			send_msg($server, $target, getArtist($nick, 1, @cmd));
 		}
-		when ('~false') { # checks if user is a false. 
+		when (m/\~false/i) { # checks if user is a false. 
 			send_msg($server, $target, userfalse($nick, 1, @cmd));
 		}
-		when ('~plays') { # checks user plays of given artist. 
+		when (m/\~plays/i) { # checks user plays of given artist. 
 			send_msg($server, $target, userPlays($nick, 1, @cmd));
 		}
-		when ('911') { # bring on the metal police 
+		when (m/\~911/i) { # bring on the metal police 
 			my @nicks = ("BrutalN00dle","kwamaking","Skuld","StompinBroknGlas","Shamed","Mike","thegauntlet","nakedcups","Fenriz","BrutalMobile");
 			if (grep {$_ eq $nick} @nicks) {
 				my $str = "...........__\_@@\@__";
@@ -97,22 +90,22 @@ sub message_public {
 				send_msg($server, $target, $str5);
 			}
 		}
-		when ('MANOWAR') { # no mas manowar 
+		when (m/\~MANOWAR/i) { # no mas manowar 
 			my $str = "Move along";
 			send_msg($server, $target, $str);
 		}
-		when ('amirite?') { # ya u rite
+		when (m/\amirite\?/i) { # ya u rite
 			my $str = "ya u rite";
 			send_msg($server, $target, $str);
 		}
-		when ('faggot') { # kick the poseurs 
+		when (m/\faggot/i) { # kick the poseurs 
 			Irssi::timeout_add_once(50, sub { $server->command("KICK $target $nick leave the hall") }, undef);
 		}
-		when ('~compare') { # tasteometer comparison
+		when (m/\~compare/i) { # tasteometer comparison
 			#created sub routine because it's more involved in lastfm.pl
 			startcompare($server, $text, $nick, $addr, $target, @cmd);
         }
-		when ('~setuser') {
+		when (m/\~setuser/i) {
 			unless (@cmd > 1) { send_msg($server, $target, "Command ~setuser needs a last.fm username.") }
 			elsif($cmd[1] eq $nick) { send_msg($server, $target, "$nick: You already are yourself.") }
 			else {
@@ -138,7 +131,7 @@ sub message_public {
 				}
 			}
 		}
-		when ('~deluser') {
+		when (m/\~deluser/i) {
 			my $ircnick = $nick eq $server->{nick} ? ($cmd[1] // $nick) : $nick;
 			my $username = $$nick_user_map{$ircnick};
 			if ($username) {
@@ -155,7 +148,7 @@ sub message_public {
 				send_msg($server, $target, "Mapping for '$ircnick' doesn't exist");
 			}
 		}
-		when ('~whois') {
+		when (m/\~whois/i) {
 			unless (@cmd > 1) {
 				send_msg($server, $target, ".whois needs a last.fm username");
 				return;

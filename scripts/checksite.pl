@@ -1,7 +1,7 @@
 #Checksite script. 
 #scrapes downforeveryoneorjustme.com to see if website is up. 
 sub checksite {
-	my ($server, $target, $cmd) = @_;
+	my ($server, $target, @cmd) = @_;
 	if (!$cmd[1]) {
 		my $str = "Please include a website. i.e., ~checksite google.com.";
 		send_msg($server, $target, $str);

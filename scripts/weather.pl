@@ -1,17 +1,17 @@
 # Weather Script
 sub get_weather {
-	my (@cmd) = @_;
+	my $cmd  = @_;
+	if (!$cmd[1]) {
+		return $str = "Please try ~weather zipcode/city,country";
+	}
+	if ($cmd[1] eq "help") {
+		return $str = "Use it like this: ~weather zipcode or ~weather city,country";
+		return $str .= " If the city has a space in it, use an underscore.  i.e., ~weather San_Diego,California";
+	}
 	my $ua = LWP::UserAgent->new;
 	$ua->agent('Mozilla/5.0');
 	my $str;
 	my $ctemp;
-	if (!$cmd[1]) {
-		$str = "Please try ~weather zipcode/city,country";
-	}
-	if ($cmd[1] eq "help") {
-		$str = "Use it like this: ~weather zipcode or ~weather city,country";
-		$str .= " If the city has a space in it, use an underscore.  i.e., ~weather San_Diego,California";
-	}
 	$ua->timeout(10);
 	my $url = 'http://38.102.136.104/auto/raw/'.$cmd[1];
 	my $results = $ua->get($url);
