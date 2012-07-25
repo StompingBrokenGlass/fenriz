@@ -164,12 +164,13 @@ sub get_last_fm_data {
 	undef;
 }
 sub startcompare {
-	my ($server, $target, @cmd) = @_;
+	my ($server, $text, $nick, $addr, $target, @cmd) = @_;
+	my @cmd = split /\s+/, $text;
 	unless (@cmd > 1) { send_msg($server, $target, "Command ~compare needs someone to compare to.") }
 	else {
 		my @users = (@cmd[1,2]);
 		unshift @users, $nick unless $cmd[2];
-		map { $_ = nick_map $_ } @users[0,1];
+		map { $_ = nick_map($_)} @users[0,1];
 		send_msg($server, $target, usercompare(@users));
 	}
 }

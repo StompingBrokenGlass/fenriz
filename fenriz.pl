@@ -110,8 +110,8 @@ sub message_public {
 		}
 		when ('~compare') { # tasteometer comparison
 			#created sub routine because it's more involved in lastfm.pl
-			startcompare($server, $target, @cmd);
-		}
+			startcompare($server, $text, $nick, $addr, $target, @cmd);
+        }
 		when ('~setuser') {
 			unless (@cmd > 1) { send_msg($server, $target, "Command ~setuser needs a last.fm username.") }
 			elsif($cmd[1] eq $nick) { send_msg($server, $target, "$nick: You already are yourself.") }
