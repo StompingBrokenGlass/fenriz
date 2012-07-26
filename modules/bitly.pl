@@ -7,7 +7,7 @@
 
 sub bitly {
 	my ($url) = @_;
-	$url =~ s/\+/ /g;
+	#this strips out the odd characters in the url.
 	my $lwp = LWP::UserAgent->new;
 	$lwp->agent("Perl::Bitly/1.0");
 	$lwp->timeout(5);
@@ -21,7 +21,12 @@ sub bitly {
 	}
 	else {
 		my $decoded_content = decode_json($response->content);
-		my $tinyurl = $decoded_content->{'results'}{$url}{'shortUrl'};
+		#since for some reason Bit.ly uses the given url as a key reference (why i have no idea)
+		#we have to grab the key so we can use the key later to get the shorturl. 
+		my %decoded_hash = %{$decoded_content->{'results'}};
+		my @bigurl = keys %decoded_hash;
+		#here is where we use that key value.  Stupid innit?
+		my $tinyurl = $decoded_content->{'results'}{$bigurl[0]}{'shortUrl'};
 		return "(".$tinyurl.")";
 	}
 }
