@@ -353,7 +353,9 @@ sub format_user_np {
 	$str .= _secs_to_mins($$data{len}) . "] ";
 	
 	#bitly for shorter url
-	$str .= bitly($$data{url});
+	if ($$data{url}) {
+		$str .= bitly($$data{url});
+	}
 	
 	if (($user eq "TheRealTauman") && ($$data{artist} eq "Ihsahn")) {
 		$str = "DerTauman is touching himself to Ihsahn... Again.";

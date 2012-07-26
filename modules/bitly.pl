@@ -16,8 +16,13 @@ sub bitly {
 	my $api_key = "R_37f6ef3f9c212cdd28f22bf515240b69";
 	my $api_src = "http://api.bit.ly/shorten?longUrl=".$url."&login=".$api_login."&apiKey=".$api_key;
 	my $response = $lwp->get($api_src);
-	my $decoded_content = decode_json($response->content);
-	my $tinyurl = $decoded_content->{'results'}{$url}{'shortUrl'};
-	return "(".$tinyurl.")";
+	if (!$response->is_success) { 
+		return;
+	}
+	else {
+		my $decoded_content = decode_json($response->content);
+		my $tinyurl = $decoded_content->{'results'}{$url}{'shortUrl'};
+		return "(".$tinyurl.")";
+	}
 }
 return 1; #return true

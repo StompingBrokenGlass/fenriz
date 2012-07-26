@@ -43,11 +43,11 @@ sub message_public {
 		}
 		when (m/\~weather/i) { # weather private msg
 			my $commandtype = "notice";
-			send_msg_weather($server, $nick, get_weather(@cmd), $commandtype);
+			send_msg_alt($server, $nick, get_weather(@cmd), $commandtype);
 		}
 		when (m/\@weather/i) { # weather public msg
 			my $commandtype = "MSG";
-			send_msg_weather($server, $target, get_weather(@cmd), $commandtype);
+			send_msg_alt($server, $target, get_weather(@cmd), $commandtype);
 		}
 		when (m/\~ud/i) {
 			urbandict($server, $target, @cmd);
@@ -103,7 +103,7 @@ sub message_public {
 			#created sub routine because it's more involved in lastfm.pl
 			startcompare($server, $text, $nick, $addr, $target, @cmd);
         }
-		when (m/\~setuser/i) {
+		when (m/\~setuser/i) { #set user
 			unless (@cmd > 1) { send_msg($server, $target, "Command ~setuser needs a last.fm username.") }
 			elsif($cmd[1] eq $nick) { send_msg($server, $target, "$nick: You already are yourself.") }
 			else {
@@ -129,7 +129,7 @@ sub message_public {
 				}
 			}
 		}
-		when (m/\~deluser/i) {
+		when (m/\~deluser/i) { # delete user
 			my $ircnick = $nick eq $server->{nick} ? ($cmd[1] // $nick) : $nick;
 			my $username = $$nick_user_map{$ircnick};
 			if ($username) {
@@ -146,7 +146,7 @@ sub message_public {
 				send_msg($server, $target, "Mapping for '$ircnick' doesn't exist");
 			}
 		}
-		when (m/\~whois/i) {
+		when (m/\~whois/i) { #references user to nick map
 			unless (@cmd > 1) {
 				send_msg($server, $target, ".whois needs a last.fm username");
 				return;

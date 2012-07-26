@@ -12,7 +12,7 @@ sub send_msg {
 }
 #Made a special one for weather because I wanted it to Notice, instead of msg. 
 #can probably find a different way to do this with some time. 
-sub send_msg_weather {
+sub send_msg_alt {
 	my ($server, $target, $text, $commandtype) = @_;
 	return unless defined $text && $text ne '';
 	if ($commandtype eq 'MSG') {

@@ -16,15 +16,20 @@ sub urbandict {
 		my $url = 'http://api.urbandictionary.com/v0/define?term='.$term;
 		my $tinyurl = bitly("http://www.urbandictionary.com/define.php?term=$term");
 		my $content = $ua->get($url);
-		my $decoded_content = decode_json($content->content);
-		if ($decoded_content->{'result_type'} ne 'exact') {
-			$entry = 'UrbanDictionary: No results found!';
+		if (!$content->is_success) {
+			$entry = 'UrbanDictionary appears to be down or there was a problem fetching the URL';
 		}
 		else {
-			$entry = $decoded_content->{'list'}[0]{'word'}.': '.$decoded_content->{'list'}[0]{'definition'}.' Example: '.
-			$decoded_content->{'list'}[0]{'example'}.' For more visit: '.$tinyurl;
+			my $decoded_content = decode_json($content->content);
+			if ($decoded_content->{'result_type'} ne 'exact') {
+				$entry = 'UrbanDictionary: No results found!';
+			}
+			else {
+				$entry = $decoded_content->{'list'}[0]{'word'}.': '.$decoded_content->{'list'}[0]{'definition'}.' Example: '.
+				$decoded_content->{'list'}[0]{'example'}.' For more visit: '.$tinyurl;
+			}
 		}
-		send_msg($server, $target, $entry);
+		return send_msg($server, $target, $entry);
 	}
 }
 

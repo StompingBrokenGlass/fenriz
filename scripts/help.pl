@@ -1,6 +1,7 @@
 #help file
 sub help {
 	my ($server, $target, $nick, @cmd) = @_;
+	my $commandtype = 'notice';
 	my @help = (
 		'--Last FM Commands:',
 		'~np [username]       - shows your currently playing song, or of another user if specified',
@@ -20,9 +21,9 @@ sub help {
 		'~checksite [website]      - Checks if a website is up or down',
 	);
 	for (@help) { #sends each element in array to window until it's empty
-		send_msg($server, $nick, $_);
+		send_msg_alt($server, $nick, $_, $commandtype);
 	}
-	send_msg($server, $target, "$nick: help sent.");
+	return send_msg($server, $target, "$nick: help sent.");
 }
 
 return 1; #return true
