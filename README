@@ -21,3 +21,15 @@ You can find me (kwamaking) on irc.snoonet.com if you have questions.
 Issue the ~help command to see a list of commands available for this bot. 
 
 I would GREATLY appreciate it if you used your own last.fm and bit.ly api keys. 
+
+Issues
+======
+
+* Missing libraries.
+
+If you try to run Fenriz and you are greated with somthing like "Can't locate List/MoreUtils.pm" you have to make sure that List::MoreUtils, JSON are installed in your Perl, you can add them using CPAN by following the below:
+
+1.Issuing "perl -MCPAN -e shell" (in ubuntu, sudo perl -MCPAN -e shell) at the command prompt to enter CPAN's prompt.
+2.After reaching the command prompt "cpan[1]>" type in "install List::MoreUtils" to install List::MoreUtils, and "install JSON" to add JSON.
+3.Type "exit" to exit CPAN's command prompt.
+4.Load Fenriz using the installation instructions.
